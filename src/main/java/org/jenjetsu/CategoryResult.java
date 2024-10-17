@@ -15,4 +15,12 @@ public class CategoryResult {
 
     private Float standardDeviation;
 
+    public CategoryResult add(CategoryResult another) {
+        return builder()
+            .category(this.category)
+            .median(this.median + another.median)
+            .standardDeviation(this.standardDeviation + another.standardDeviation)
+            .build();
+    }
+
 }

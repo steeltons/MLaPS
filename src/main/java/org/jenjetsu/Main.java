@@ -14,40 +14,36 @@ public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     /**
-     * To check single thread time usage - set thread to 1
-     * To multithreading - set another
+     * For check single thread time usage - set thread to 1<br>
+     * For multithreading - set another
      */
-    private static final ExecutorService executorService = Executors.newFixedThreadPool(1);
+    private static final ExecutorService executorService = Executors.newFixedThreadPool(6);
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
+        var finalCategoryResult = Arrays.stream(CsvCategory.values())
+            .map(name -> new CategoryResult(name.name(), 0f, 0f))
+            .collect(Collectors.toMap(CategoryResult::getCategory, Function.identity()));
 
         var start = LocalDateTime.now();
 
         var generatorFutures = getFilenameFutures();
-
         var processFutures = getProcessCallFutures(generatorFutures);
-
-        var categoryMap = Arrays.stream(CsvCategory.values())
-            .map(name -> new CategoryResult(name.name(), 0f, 0f))
-            .collect(Collectors.toMap(CategoryResult::getCategory, Function.identity()));
 
         // Obtain result from futures
         for (var future : processFutures) {
             var result = future.get();
 
             result.forEach((category, categoryResult) -> {
-                var categoryBucket = categoryMap.get(category);
-                categoryBucket.setMedian(categoryBucket.getMedian() + categoryResult.getMedian());
-                categoryBucket.setStandardDeviation(categoryBucket.getStandardDeviation() + categoryResult.getStandardDeviation());
+                finalCategoryResult.computeIfPresent(category, (k, v) -> v.add(categoryResult));
             });
         }
 
-        categoryMap.values().forEach(result -> {
+        finalCategoryResult.values().forEach(result -> {
             var category = result.getCategory();
             var median = result.getMedian() / processFutures.size();
             var standardDeviation = result.getStandardDeviation() / processFutures.size();
 
-            System.out.println(category + " " + median + " " + standardDeviation);
+            logger.info("Category={}, median={}, standard deviation={}", category, median, standardDeviation);
         });
 
         executorService.shutdown();
@@ -58,6 +54,11 @@ public class Main {
 
     }
 
+    /**
+     * Create 6 file generators and send then to executor
+     * @return list of futures that returns filenames
+     * @throws InterruptedException
+     */
     private static List<Future<String>> getFilenameFutures() throws InterruptedException {
         var generatorCalls = new ArrayList<Callable<String>>();
 
@@ -68,6 +69,13 @@ public class Main {
         return executorService.invokeAll(generatorCalls);
     }
 
+    /**
+     *
+     * @param generatorFutures list of futures that returns filenames
+     * @return list of futures that returns result per category
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     private static List<Future<Map<String, CategoryResult>>> getProcessCallFutures(
         List<Future<String>> generatorFutures
     ) throws ExecutionException, InterruptedException {

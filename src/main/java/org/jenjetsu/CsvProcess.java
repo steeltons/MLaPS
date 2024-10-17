@@ -15,7 +15,7 @@ public class CsvProcess implements Callable<Map<String, CategoryResult>> {
 
     @Override
     public Map<String, CategoryResult> call() {
-        var categoryModelMap = readModelsByCategory();
+        var categoryModelMap = readAndGroupModelsByCategory();
 
         var categoryResults = categoryModelMap.entrySet().stream()
             .map(pair -> {
@@ -37,7 +37,11 @@ public class CsvProcess implements Callable<Map<String, CategoryResult>> {
         return categoryResults;
     }
 
-    private Map<String, List<CsvModel>> readModelsByCategory() {
+    /**
+     * Read all records from file and group results by category
+     * @return map of category and its params
+     */
+    private Map<String, List<CsvModel>> readAndGroupModelsByCategory() {
         var categoryModelMap = new HashMap<String, List<CsvModel>>();
 
         while (modelReader.hasNext()) {

@@ -3,8 +3,6 @@ package org.jenjetsu;
 import java.io.*;
 import java.util.*;
 
-import lombok.*;
-
 public class CsvModelReader {
 
     private final Scanner scanner;

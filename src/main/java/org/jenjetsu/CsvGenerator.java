@@ -6,12 +6,14 @@ import java.util.concurrent.*;
 
 public class CsvGenerator implements Callable<String> {
 
+    /** Count of elements that would be written to file **/
     private static final int MAX_FILE_SIZE = 1_000_000;
 
     private static final Random random = new Random();
 
     private static final int categoryCount = CsvCategory.values().length;
 
+    /** Csv headers **/
     private static final List<String> HEADERS = List.of("value", "category");
 
     @Override
