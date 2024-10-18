@@ -1,7 +1,9 @@
-package org.jenjetsu;
+package org.jenjetsu.single;
 
 import java.io.*;
 import java.util.*;
+
+import org.jenjetsu.support.*;
 
 public class CsvModelReader {
 
@@ -28,7 +30,7 @@ public class CsvModelReader {
 
         return CsvModel.builder()
             .value(Float.parseFloat(words[0]))
-            .category(words[1])
+            .category(CsvCategory.valueOf(words[1]))
             .build();
     }
 }

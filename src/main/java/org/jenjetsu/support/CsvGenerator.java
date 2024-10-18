@@ -1,13 +1,12 @@
-package org.jenjetsu;
+package org.jenjetsu.support;
 
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class CsvGenerator implements Callable<String> {
+import org.jenjetsu.single.*;
 
-    /** Count of elements that would be written to file **/
-    private static final int MAX_FILE_SIZE = 1_000_000;
+public class CsvGenerator implements Callable<String> {
 
     private static final Random random = new Random();
 
@@ -16,19 +15,32 @@ public class CsvGenerator implements Callable<String> {
     /** Csv headers **/
     private static final List<String> HEADERS = List.of("value", "category");
 
+    public final int maxElements;
+
+    public CsvGenerator(int maxElements) {
+        if (maxElements <= 0) {
+            throw new IllegalArgumentException("Count of elements cannot be less or eq zero");
+        }
+        this.maxElements = maxElements;
+    }
+
     @Override
     public String call() {
         var filename = "test_" + Thread.currentThread().getName() + ".csv";
+        return call(filename);
+    }
+
+    public String call(String filename) {
         var counter = 0;
 
         try (var writer = new FileWriter(filename)) {
             var headersLine = String.join(",", HEADERS);
             writer.write(headersLine + "\n");
 
-            while (counter < MAX_FILE_SIZE) {
+            while (counter < maxElements) {
                 var model = generateModel();
-                writer.write(model.getValue() + "," + model.getCategory());
-                if (counter < MAX_FILE_SIZE - 1) {
+                writer.write(model.getValue() + "," + model.getCategory().name());
+                if (counter < maxElements - 1) {
                     writer.write("\n");
                 }
 
@@ -39,7 +51,6 @@ public class CsvGenerator implements Callable<String> {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     private CsvModel generateModel() {
@@ -47,7 +58,7 @@ public class CsvGenerator implements Callable<String> {
         var randomCategoryIndex = random.nextInt(0, categoryCount);
         var model = CsvModel.builder()
             .value(randomValue)
-            .category(CsvCategory.values()[randomCategoryIndex].toString())
+            .category(CsvCategory.values()[randomCategoryIndex])
             .build();
 
         return model;

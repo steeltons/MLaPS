@@ -1,11 +1,13 @@
-package org.jenjetsu;
+package org.jenjetsu.single;
 
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.*;
 import java.util.stream.*;
 
-public class CsvProcess implements Callable<Map<String, CategoryResult>> {
+import org.jenjetsu.support.*;
+
+public class CsvProcess implements Callable<Map<CsvCategory, CategoryResult>> {
 
     private final CsvModelReader modelReader;
 
@@ -14,7 +16,7 @@ public class CsvProcess implements Callable<Map<String, CategoryResult>> {
     }
 
     @Override
-    public Map<String, CategoryResult> call() {
+    public Map<CsvCategory, CategoryResult> call() {
         var categoryModelMap = readAndGroupModelsByCategory();
 
         var categoryResults = categoryModelMap.entrySet().stream()
@@ -23,8 +25,8 @@ public class CsvProcess implements Callable<Map<String, CategoryResult>> {
                     .map(CsvModel::getValue)
                     .sorted(Float::compareTo)
                     .toList();
-                var median = CsvTools.getMedian(values);
-                var standardDeviation = CsvTools.countStandardDeviation(values);
+                var median = CsvTools.getMedian(values, false);
+                var standardDeviation = CsvTools.getStandardDeviation(values, false);
 
                 return CategoryResult.builder()
                     .category(pair.getKey())
@@ -41,8 +43,8 @@ public class CsvProcess implements Callable<Map<String, CategoryResult>> {
      * Read all records from file and group results by category
      * @return map of category and its params
      */
-    private Map<String, List<CsvModel>> readAndGroupModelsByCategory() {
-        var categoryModelMap = new HashMap<String, List<CsvModel>>();
+    private Map<CsvCategory, List<CsvModel>> readAndGroupModelsByCategory() {
+        var categoryModelMap = new HashMap<CsvCategory, List<CsvModel>>();
 
         while (modelReader.hasNext()) {
             var model = modelReader.getModel();

@@ -1,4 +1,4 @@
-package org.jenjetsu;
+package org.jenjetsu.support;
 
 import lombok.*;
 
@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 public class CategoryResult {
 
-    private String category;
+    private CsvCategory category;
 
     private Float median;
 
@@ -21,6 +21,11 @@ public class CategoryResult {
             .median(this.median + another.median)
             .standardDeviation(this.standardDeviation + another.standardDeviation)
             .build();
+    }
+
+    @Override
+    public String toString() {
+        return "Category=" + category + " median=" + median + " standard deviation=" + standardDeviation;
     }
 
 }
