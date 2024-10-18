@@ -23,4 +23,9 @@ public class CategoryResult {
             .build();
     }
 
+    @Override
+    public String toString() {
+        return "Category=" + category + " median=" + median + " standard deviation=" + standardDeviation;
+    }
+
 }
