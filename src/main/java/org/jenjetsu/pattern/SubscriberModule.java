@@ -67,8 +67,8 @@ public class SubscriberModule implements Runnable {
         }
 
         private CategoryResult getResult() {
-            var median = CsvTools.getMedian(values, true);
-            var standardDeviation = CsvTools.getStandardDeviation(values, true);
+            var median = CsvTools.getMedian(values, false);
+            var standardDeviation = CsvTools.getStandardDeviation(values, false);
 
             return CategoryResult.builder()
                 .category(this.category)
