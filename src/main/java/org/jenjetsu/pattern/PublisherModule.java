@@ -1,4 +1,4 @@
-package org.jenjetsu.v2;
+package org.jenjetsu.pattern;
 
 import java.nio.file.*;
 import java.util.*;

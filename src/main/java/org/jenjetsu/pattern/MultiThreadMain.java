@@ -1,4 +1,4 @@
-package org.jenjetsu.v2;
+package org.jenjetsu.pattern;
 
 import java.time.*;
 import java.time.temporal.*;

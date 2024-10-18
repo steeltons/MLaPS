@@ -2,8 +2,7 @@ package org.jenjetsu;
 
 import java.util.concurrent.*;
 
-import org.jenjetsu.single.*;
-import org.jenjetsu.v2.*;
+import org.jenjetsu.pattern.*;
 
 public class Main {
 
