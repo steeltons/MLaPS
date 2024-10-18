@@ -4,9 +4,11 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.*;
 
-import org.jenjetsu.tool.*;
+import org.jenjetsu.support.*;
 
 public class GeneratorModule {
+
+    private static final int MAX_ELEMENTS = 10_000_000;
 
     private final ExecutorService executorService;
 
@@ -22,7 +24,7 @@ public class GeneratorModule {
 
     public Set<Future<String>> start() {
         var futures = IntStream.range(0, generatorCount).boxed()
-            .map(ignore -> new CsvGenerator())
+            .map(ignore -> new CsvGenerator(MAX_ELEMENTS))
             .map(executorService::submit)
             .collect(Collectors.toSet());
 

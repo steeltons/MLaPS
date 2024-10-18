@@ -1,4 +1,4 @@
-package org.jenjetsu;
+package org.jenjetsu.support;
 
 import lombok.*;
 

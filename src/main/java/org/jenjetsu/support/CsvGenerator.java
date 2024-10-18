@@ -1,13 +1,12 @@
-package org.jenjetsu;
+package org.jenjetsu.support;
 
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class CsvGenerator implements Callable<String> {
+import org.jenjetsu.*;
 
-    /** Count of elements that would be written to file **/
-    private static final int MAX_FILE_SIZE = 1_000_000;
+public class CsvGenerator implements Callable<String> {
 
     private static final Random random = new Random();
 
@@ -15,6 +14,15 @@ public class CsvGenerator implements Callable<String> {
 
     /** Csv headers **/
     private static final List<String> HEADERS = List.of("value", "category");
+
+    public final int maxElements;
+
+    public CsvGenerator(int maxElements) {
+        if (maxElements <= 0) {
+            throw new IllegalArgumentException("Count of elements cannot be less or eq zero");
+        }
+        this.maxElements = maxElements;
+    }
 
     @Override
     public String call() {
@@ -25,10 +33,10 @@ public class CsvGenerator implements Callable<String> {
             var headersLine = String.join(",", HEADERS);
             writer.write(headersLine + "\n");
 
-            while (counter < MAX_FILE_SIZE) {
+            while (counter < maxElements) {
                 var model = generateModel();
                 writer.write(model.getValue() + "," + model.getCategory());
-                if (counter < MAX_FILE_SIZE - 1) {
+                if (counter < maxElements - 1) {
                     writer.write("\n");
                 }
 

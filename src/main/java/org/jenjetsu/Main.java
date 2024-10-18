@@ -9,15 +9,19 @@ import java.util.stream.*;
 
 import org.slf4j.*;
 
+import org.jenjetsu.support.*;
+
 public class Main {
 
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
+
+    private static final int MAX_ELEMENTS = 10_000_00;
 
     /**
      * For check single thread time usage - set thread to 1<br>
      * For multithreading - set another
      */
-    private static final ExecutorService executorService = Executors.newFixedThreadPool(6);
+    private static final ExecutorService executorService = Executors.newFixedThreadPool(1);
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         var finalCategoryResult = Arrays.stream(CsvCategory.values())
@@ -63,7 +67,7 @@ public class Main {
         var generatorCalls = new ArrayList<Callable<String>>();
 
         for (var i = 0; i < 6; i++) {
-            var generatorCall = new CsvGenerator();
+            var generatorCall = new CsvGenerator(MAX_ELEMENTS);
             generatorCalls.add(generatorCall);
         }
         return executorService.invokeAll(generatorCalls);

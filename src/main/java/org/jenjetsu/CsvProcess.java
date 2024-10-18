@@ -5,6 +5,8 @@ import java.util.concurrent.*;
 import java.util.function.*;
 import java.util.stream.*;
 
+import org.jenjetsu.support.*;
+
 public class CsvProcess implements Callable<Map<String, CategoryResult>> {
 
     private final CsvModelReader modelReader;
@@ -23,8 +25,8 @@ public class CsvProcess implements Callable<Map<String, CategoryResult>> {
                     .map(CsvModel::getValue)
                     .sorted(Float::compareTo)
                     .toList();
-                var median = CsvTools.getMedian(values);
-                var standardDeviation = CsvTools.countStandardDeviation(values);
+                var median = CsvTools.getMedian(values, false);
+                var standardDeviation = CsvTools.getStandardDeviation(values, false);
 
                 return CategoryResult.builder()
                     .category(pair.getKey())
