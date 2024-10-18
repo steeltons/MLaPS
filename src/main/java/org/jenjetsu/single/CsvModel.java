@@ -1,8 +1,7 @@
-package org.jenjetsu;
-
-import java.math.*;
+package org.jenjetsu.single;
 
 import lombok.*;
+import org.jenjetsu.support.*;
 
 @Getter
 @Setter
@@ -13,6 +12,6 @@ public class CsvModel {
 
     private Float value;
 
-    private String category;
+    private CsvCategory category;
 
 }

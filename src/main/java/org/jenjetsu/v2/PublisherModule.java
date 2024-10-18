@@ -1,6 +1,5 @@
 package org.jenjetsu.v2;
 
-import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -9,7 +8,8 @@ import java.util.concurrent.atomic.*;
 import org.slf4j.*;
 
 import lombok.*;
-import org.jenjetsu.*;
+import org.jenjetsu.single.*;
+import org.jenjetsu.support.*;
 
 public class PublisherModule implements Runnable {
 
@@ -80,10 +80,10 @@ public class PublisherModule implements Runnable {
             logger.info("Reader publisher job done");
         }
 
-        private CsvModelV2 parseModel(String line) {
+        private CsvModel parseModel(String line) {
             var words = line.split(",");
 
-            return CsvModelV2.builder()
+            return CsvModel.builder()
                 .value(Float.parseFloat(words[0]))
                 .category(CsvCategory.valueOf(words[1]))
                 .build();

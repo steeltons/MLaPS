@@ -3,9 +3,10 @@ package org.jenjetsu.v2;
 import java.util.*;
 import java.util.concurrent.*;
 
-import org.jenjetsu.*;
+import org.jenjetsu.single.*;
+import org.jenjetsu.support.*;
 
-import static org.jenjetsu.CsvCategory.*;
+import static org.jenjetsu.support.CsvCategory.*;
 
 public class QueueManager {
 
@@ -13,7 +14,7 @@ public class QueueManager {
 
     private static final QueueManager INSTANCE = new QueueManager();
 
-    private final Map<CsvCategory, LinkedBlockingQueue<CsvModelV2>> map = Map.of(
+    private final Map<CsvCategory, LinkedBlockingQueue<CsvModel>> map = Map.of(
         A, new LinkedBlockingQueue<>(MAX_QUEUE_ELEMENTS),
         B, new LinkedBlockingQueue<>(MAX_QUEUE_ELEMENTS),
         C, new LinkedBlockingQueue<>(MAX_QUEUE_ELEMENTS),
@@ -22,7 +23,7 @@ public class QueueManager {
 
     private QueueManager() {}
 
-    public boolean pushValue(CsvCategory category, CsvModelV2 model) {
+    public boolean pushValue(CsvCategory category, CsvModel model) {
         var queue = map.get(category);
         boolean result = false;
         try {
@@ -34,9 +35,9 @@ public class QueueManager {
         return result;
     }
 
-    public CsvModelV2 getValue(CsvCategory category) {
+    public CsvModel getValue(CsvCategory category) {
         var queue = map.get(category);
-        CsvModelV2 result = null;
+        CsvModel result = null;
         try {
             result = queue.poll(2, TimeUnit.SECONDS);
         } catch (InterruptedException e) {

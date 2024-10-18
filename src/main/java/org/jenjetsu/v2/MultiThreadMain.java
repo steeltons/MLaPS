@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.*;
 
 import lombok.*;
 
-public class MainV2 {
+public class MultiThreadMain {
 
     private static final AtomicBoolean stopFlag = new AtomicBoolean(false);
 

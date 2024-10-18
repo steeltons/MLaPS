@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-import org.jenjetsu.*;
+import org.jenjetsu.single.*;
 
 public class CsvGenerator implements Callable<String> {
 
@@ -27,6 +27,10 @@ public class CsvGenerator implements Callable<String> {
     @Override
     public String call() {
         var filename = "test_" + Thread.currentThread().getName() + ".csv";
+        return call(filename);
+    }
+
+    public String call(String filename) {
         var counter = 0;
 
         try (var writer = new FileWriter(filename)) {
@@ -35,7 +39,7 @@ public class CsvGenerator implements Callable<String> {
 
             while (counter < maxElements) {
                 var model = generateModel();
-                writer.write(model.getValue() + "," + model.getCategory());
+                writer.write(model.getValue() + "," + model.getCategory().name());
                 if (counter < maxElements - 1) {
                     writer.write("\n");
                 }
@@ -47,7 +51,6 @@ public class CsvGenerator implements Callable<String> {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     private CsvModel generateModel() {
@@ -55,7 +58,7 @@ public class CsvGenerator implements Callable<String> {
         var randomCategoryIndex = random.nextInt(0, categoryCount);
         var model = CsvModel.builder()
             .value(randomValue)
-            .category(CsvCategory.values()[randomCategoryIndex].toString())
+            .category(CsvCategory.values()[randomCategoryIndex])
             .build();
 
         return model;

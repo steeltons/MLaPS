@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 public class CategoryResult {
 
-    private String category;
+    private CsvCategory category;
 
     private Float median;
 

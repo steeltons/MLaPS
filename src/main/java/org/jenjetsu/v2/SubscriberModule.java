@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.*;
 import org.slf4j.*;
 
 import lombok.*;
-import org.jenjetsu.*;
+import org.jenjetsu.single.*;
 import org.jenjetsu.support.*;
 
 @RequiredArgsConstructor
@@ -62,34 +62,18 @@ public class SubscriberModule implements Runnable {
             return getResult();
         }
 
-        private void processModel(CsvModelV2 model) {
+        private void processModel(CsvModel model) {
             values.add(model.getValue());
         }
 
         private CategoryResult getResult() {
-            var sum = 0f;
-            int counter = 0;
-            Float median = null;
-
-            values.sort(Float::compareTo);
-            var stopCounter = values.size() / 2;
-
-            for (var elem : values) {
-                if (counter == stopCounter) {
-                    median = elem;
-                }
-                sum += elem;
-            }
-
-            var averageValue = sum / values.size();
-            var newSum = values.stream()
-                .map(val -> (float) Math.pow(val - averageValue, 2))
-                .reduce(0f, Float::sum);
+            var median = CsvTools.getMedian(values, true);
+            var standardDeviation = CsvTools.getStandardDeviation(values, true);
 
             return CategoryResult.builder()
-                .category(this.category.name())
+                .category(this.category)
                 .median(median)
-                .standardDeviation(newSum)
+                .standardDeviation(standardDeviation)
                 .build();
         }
 
